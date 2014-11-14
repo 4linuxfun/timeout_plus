@@ -24,4 +24,4 @@ run and stop an specified service with a time limit
 		nohup timeout_plus.tcl -p pid -t 08:11 >/dev/null 2>&1 &
 	4. stop a service with an know service name at an specified time
 	
-		nohup timeout_plus.tcl -n httpd -t 08:11 
+		nohup timeout_plus.tcl -n httpd -t 08:11 >/dev/null 2>&1 &
