@@ -1,4 +1,4 @@
-#!/bin/tclsh
+#!/usr/bin/tclsh
 #This is a script to termit pid at know time
 #./timec.tcl -p pid -d 2014-01-03 -t 08:13
 #./timec.tcl -n pidname -t 08:13
