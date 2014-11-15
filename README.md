@@ -25,3 +25,5 @@ run and stop an specified service with a time limit
 	4. stop a service with an know service name at an specified time
 	
 		nohup timeout_plus.tcl -n "watch date" -t 08:11 >/dev/null 2>&1 &
+
+[中文脚本说明](http://www.4linuxfun.com/timeout_plus-jiao-ben-shuo-ming/)
