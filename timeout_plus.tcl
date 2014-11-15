@@ -19,11 +19,11 @@ proc killp {killpid closetime} {
 		}
 	after 500
 }
-#set closetime [clock [lindex $argv 1 ]]
 }
 
 
 #定义为全局变量
+set runp 0
 set killpid 0
 set closetime 0 
 set systemTime  0
@@ -48,16 +48,9 @@ exit 1
 		exit 1
 	}
 }
-#puts "keyinfo is:${keyinfo}"
 foreach key $keyinfo {
 	switch $key {
-		-P { set runp [dict get $argv $key]
-		     puts "run command is:$runp"
-		     if {[catch {eval exec /usr/bin/nohup ${runp} >/dev/null 2>&1 &} killpid]} {
-				puts "run process error."
-				exit 1
-			}		
-		}
+		-P { set runp 	   [dict get $argv $key]}
 		-p { set killpid   [dict get $argv $key]}
 		-n { set killname  [dict get $argv $key]}
 		-d { set closedate [dict get $argv $key]}
@@ -66,8 +59,7 @@ foreach key $keyinfo {
 }
 
 
-#puts "killpid $killpid,killname $killname,closedate $closedate,closetime $closetime"
-
+puts "filename is:$::argv0"
 #确认关闭程序具体时间
 if { $closedate == 0 } {
 	set closetime [clock scan [list [clock format [clock seconds] -format {%Y-%m-%d}] $closetime] -format {%Y-%m-%d %H:%M}] 
@@ -79,17 +71,23 @@ if { $closedate == 0 } {
 		set closetime [clock scan [list $closedate $closetime] -format "%Y-%m-%d %H:%M"]
 		puts "closedate+time:$closetime"
 	}
-#puts "closetime is :$closetime"
 
 if { $closetime < [clock seconds] } {
 puts "closetime is less than now"
 exit 1
 }
-puts "killpid is:$killpid"
+
+if { $runp != 0 } {
+	if {[catch {eval exec /usr/bin/nohup ${runp} >/dev/null 2>&1 &} killpid]} {
+		puts "run process error."
+		exit 1
+	}		
+}
+
 #确认关闭程序的pid
 if {$killpid == 0} {
-	if { [catch {split [exec pgrep $killname] "\n"} killpid]} {
-		puts "There is no pid you want to kill"
+	if { [catch {split [ exec ps -ax | grep -i "$killname" | grep -v "$::argv0" | awk {{print $1}}] "\n"} killpid]} {
+		puts "There is no pid name you want to kill:$killpid"
 		exit 1
 	}
 }
