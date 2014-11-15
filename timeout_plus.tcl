@@ -6,15 +6,12 @@
 
 #执行循环干掉某进程
 proc killp {killpid closetime} {
-	puts "$killpid"
 	while {1} {
 		set systemTime [clock seconds]
-		##puts $systemTime
 		if { $systemTime >= $closetime } {
 			foreach kpid $killpid {
 			exec kill -9 $kpid
 			}
-			puts "kill ok"
 			exit
 		}
 	after 500
@@ -23,19 +20,16 @@ proc killp {killpid closetime} {
 
 
 #定义为全局变量
-set runp 0
-set killpid 0
-set closetime 0 
+set runp 	0
+set killpid 	0
+set closetime 	0 
 set systemTime  0
-set closedate 0
-set killname 0
-
+set closedate 	0
+set killname 	0
+set runtime 	0
 #判断参数个数，argc个数从1开始计数
 if { $argc < 2 } {
-puts "Error:command like ./timec.tcl pid date"
-puts "#./timec.tcl pid time"
-puts "#time:2014-01-02 8:13"
-puts "#time:16:15"
+puts "Error:arguments error!"
 exit 1
 } elseif { $argc < 7 } {
 
@@ -55,21 +49,35 @@ foreach key $keyinfo {
 		-n { set killname  [dict get $argv $key]}
 		-d { set closedate [dict get $argv $key]}
 		-t { set closetime [dict get $argv $key]}
+		-r { 
+		     set runtime   [dict get $argv $key]
+		     set time_unit [string index $runtime end]
+		     set runtime   [string range $runtime 0 end-1]	
+		     switch $time_unit {
+			d { set closetime [expr $runtime * 86400] }
+			h { set closetime [expr $runtime * 3600]  }
+			m { set closetime [expr $runtime * 60]    }
+			s { set closetime $runtime		  }
+			default {
+			        puts "time unit is : d/h/m/s" 
+				exit 1
+				}
+			}
+		}
 	}
 }
 
-
-puts "filename is:$::argv0"
 #确认关闭程序具体时间
 if { $closedate == 0 } {
-	set closetime [clock scan [list [clock format [clock seconds] -format {%Y-%m-%d}] $closetime] -format {%Y-%m-%d %H:%M}] 
-	puts "closedate:$closetime"
+	if { $runtime == 0} {
+		set closetime [clock scan [list [clock format [clock seconds] -format {%Y-%m-%d}] $closetime] -format {%Y-%m-%d %H:%M}] 
+		} else {
+		set closetime [expr [clock seconds] + $closetime]
+		}
 	} elseif { $closetime == 0} {
-		set closetime [clock scan $closedate -format %Y-%m-%d]
-		puts "closetime:$closetime"
+		set closetime [clock scan $closedate -format %Y-%m-%d] 
 	} else {
 		set closetime [clock scan [list $closedate $closetime] -format "%Y-%m-%d %H:%M"]
-		puts "closedate+time:$closetime"
 	}
 
 if { $closetime < [clock seconds] } {
