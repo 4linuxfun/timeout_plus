@@ -6,7 +6,7 @@ run and stop an specified service with a time limit
 	yum install tcl
 2. Help info
 
-	* -P(upper P):run a process througth timec.tcl script
+	* -P(upper P):run a process througth timeout_plus.tcl script
 	* -p(lowper p):the process id which you want to close at a time
 	* -n:the name what you want to close at a time
 	* -d:the date like 2014-01-01(only like this)
