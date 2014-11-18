@@ -54,9 +54,9 @@ foreach key $keyinfo {
 		     set time_unit [string index $runtime end]
 		     set runtime   [string range $runtime 0 end-1]	
 		     switch $time_unit {
-			d { set closetime [expr $runtime * 86400] }
-			h { set closetime [expr $runtime * 3600]  }
-			m { set closetime [expr $runtime * 60]    }
+			d { set closetime [expr {$runtime * 86400}] }
+			h { set closetime [expr {$runtime * 3600}]  }
+			m { set closetime [expr {$runtime * 60}]    }
 			s { set closetime $runtime		  }
 			default {
 			        puts "time unit is : d/h/m/s" 
