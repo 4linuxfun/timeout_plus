@@ -6,16 +6,12 @@
 
 #执行循环干掉某进程
 proc killp {killpid closetime} {
-	while {1} {
-		set systemTime [clock seconds]
-		if { $systemTime >= $closetime } {
-			foreach kpid $killpid {
-			exec kill -9 $kpid
-			}
-			exit
-		}
-	after 500
-}
+	set seconds [expr {$closetime -[clock seconds]}]
+	after [expr {$seconds * 1000}]
+	foreach kpid $killpid {
+		exec kill -9 $kpid
+	}
+	
 }
 
 
